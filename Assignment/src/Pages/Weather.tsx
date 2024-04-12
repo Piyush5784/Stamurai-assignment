@@ -1,13 +1,11 @@
 import axios from "axios";
-import { useContext, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { ApiKey, getBgImgAndIcon, url } from "../Data";
 import humidity from "../images/humidity.png";
 import windImg from "../images/wind.png";
 import { useRecoilState } from "recoil";
 import { DetailsAtom, bgImg_BgIcon_Atom, loadingAtom2 } from "../Atoms/Atoms";
-import { DataContext } from "../ContextApi";
-
 const Weather = () => {
   const { cityName } = useParams();
   const [input, setInput] = useState<string | undefined>(cityName);
@@ -19,7 +17,6 @@ const Weather = () => {
     const weatherUrl = url + input + ApiKey;
     try {
       const res = await axios.get(weatherUrl);
-      const name = res.data.name;
       setDetails({
         temp: res.data.main.temp,
         wind: res.data.wind.speed,
@@ -32,8 +29,6 @@ const Weather = () => {
         timezone: res.data.timezone,
         windGust: res.data.wind.gust,
       });
-      console.log(name, details);
-      // addCityWeatherData(name, details);
       SetBgImgAndIcon(getBgImgAndIcon(res.data.weather[0].main));
     } catch (error) {
       console.log(error);
