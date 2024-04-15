@@ -1,15 +1,15 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { Params, useParams } from "react-router-dom";
 import { ApiKey, getBgImgAndIcon, url } from "../Data";
 import humidity from "../images/humidity.png";
 import windImg from "../images/wind.png";
-import { useRecoilState } from "recoil";
-import { DetailsAtom, bgImg_BgIcon_Atom, loadingAtom2 } from "../Atoms/Atoms";
+import { useRecoilState, useRecoilValueLoadable } from "recoil";
+import { DetailsAtom, bgImg_BgIcon_Atom, weatherData } from "../Atoms/Atoms";
 const Weather = () => {
-  const { cityName } = useParams();
+  const { cityName }: Readonly<Params<string>> = useParams();
+  const weatherDataByCity = useRecoilValueLoadable(weatherData(cityName || ""));
   const [input, setInput] = useState<string | undefined>(cityName);
-  const [loading, SetLoading] = useRecoilState<boolean>(loadingAtom2);
   const [details, setDetails] = useRecoilState(DetailsAtom);
   const [bgImgAndIcon, SetBgImgAndIcon] = useRecoilState(bgImg_BgIcon_Atom);
 
@@ -34,17 +34,15 @@ const Weather = () => {
       console.log(error);
       alert("Error fetch Data");
     }
-    SetLoading(false);
   }
 
   useEffect(() => {
-    SetLoading(true);
     fetchWeather();
   }, []);
 
-  if (loading) {
+  if (weatherDataByCity.state == "loading") {
     return <div>...loading</div>;
-  } else if (!loading) {
+  } else if (weatherDataByCity.state == "hasValue") {
     return (
       <>
         <div className=" flex justify-center items-center">

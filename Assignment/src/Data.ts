@@ -219,6 +219,7 @@ export const country_names = [
 export const ApiKey = "&appid=314aaa8c5ef6f26f08b5166253cc43c1";
 export const url =
   "https://api.openweathermap.org/data/2.5/weather?units=metric&q=";
+
 export interface responseProp {
   coord: {
     lon: number;
